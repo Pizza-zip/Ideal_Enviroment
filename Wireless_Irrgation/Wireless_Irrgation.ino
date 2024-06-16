@@ -5,6 +5,7 @@
 int led_1_pin = 10;
 int led_2_pin = 12;
 int pump_pin_1 = 13;
+int water_cond;
 
 float moist_val;
 float MOIST_MAX = 430.0;
@@ -34,6 +35,12 @@ void setup() {
 void loop() {
 
   moist_val = getMoist();
+
+  if (water_cond == 120){
+    //
+    pumpStatus(moist_val);
+    water_cond = 0;
+  }
   //checkWater(moist_val);
   time = millis();
 
@@ -44,6 +51,10 @@ void loop() {
   Serial.print(maxthermo.readThermocoupleTemperature());
   Serial.print("\t");
   Serial.println();
+
+  delay(30000);
+
+  water_cond += 1;
 }
 
 
@@ -84,7 +95,7 @@ void waterPump(char State) {
   }
 }
 
-void checkWater(double moist_val){
+void pumpStatus(double moist_val){
     if (moist_val <= 50 )
     {
       digitalWrite(pump_pin_1, HIGH);
